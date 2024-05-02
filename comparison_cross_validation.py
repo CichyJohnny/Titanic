@@ -8,17 +8,21 @@ from scratch_lib.decision_tree import DecisionTree
 from scratch_lib.random_forest import RandomForest
 from scratch_lib.knn import KNN
 from scratch_lib.logistic_regression import LogisticRegression
+from scratch_lib.naive_bayes import NaiveBayes
+
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression as LogisticRegression_lib
+from sklearn.naive_bayes import GaussianNB as NaiveBayes_lib
 
 compare_data = {}
 
 # Load data
 labels = ["Decision_Tree_Scratch", "Random_Forest_Scratch", "KNN_Scratch", "Logistic_Regression_Scratch",
-          "KNN_lib", "Random_Forest_lib", "Logistic_Regression_lib"]
-models = [DecisionTree, RandomForest, KNN, LogisticRegression,
-          KNeighborsClassifier, RandomForestClassifier, LogisticRegression_lib]
+          "Naive_Bayes_Scratch",
+          "Random_Forest_lib", "KNN_lib", "Logistic_Regression_lib", "Naive_Bayes_lib"]
+models = [DecisionTree, RandomForest, KNN, LogisticRegression, NaiveBayes,
+          RandomForestClassifier, KNeighborsClassifier, LogisticRegression_lib, NaiveBayes_lib]
 
 n_splits = 15
 
@@ -77,4 +81,4 @@ def cross_validate(n_repeats=10):
 cross_validate()
 
 with open("comparison.json", "w") as json_file:
-    json.dump(compare_data, json_file)
+    json.dump(compare_data, json_file, indent=4)

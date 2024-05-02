@@ -15,11 +15,11 @@ class LogisticRegression:
         self.bias = None
 
     def fit(self, X, y):
+        X = X.astype(float)
+
         n_samples, n_features = X.shape
         self.weights = np.zeros(n_features)
         self.bias = 0
-
-        X = X.astype(float)
 
         for _ in range(self.n_iters):
             linear_pred = np.dot(X, self.weights) + self.bias
