@@ -3,17 +3,17 @@ from collections import Counter
 
 
 class DecisionTree:
-    def __init__(self, min_samples_split=2, max_depth=100, num_features=None):
+    def __init__(self, min_samples_split=2, max_depth=100):
         self.min_samples_split = min_samples_split
         self.max_depth = max_depth
-        self.num_features = num_features
+        self.num_features = None
         self.root = None
 
     # First callable function
     def fit(self, X, y):
-        # Num of features can't exceed number of actual features
-        self.num_features = X.shape[1] if not self.num_features else min(self.num_features, X.shape[1])
+        self.num_features = X.shape[1]
 
+        # Start growing tree from the root
         self.root = self.__grow_tree(X, y)
 
     # Helper functions
@@ -35,17 +35,20 @@ class DecisionTree:
         # Create child nodes
         lefts_idxs, rights_idxs = self.__split(X[:, best_feature], best_threshold)
 
+        # If subset is empty, create a leaf node
         if len(lefts_idxs) == 0 or len(rights_idxs) == 0:
             leaf_value = self.__most_common_label(y)
 
             return Node(value=leaf_value)
 
+        # Grow tree
         left = self.__grow_tree(X[lefts_idxs, :], y[lefts_idxs], depth + 1)
         right = self.__grow_tree(X[rights_idxs, :], y[rights_idxs], depth + 1)
 
         return Node(best_feature, best_threshold, left=left, right=right)
 
     def __most_common_label(self, y):
+        # Count most common y-value
         count = Counter(y)
         value = count.most_common(1)[0][0]
 
@@ -55,11 +58,13 @@ class DecisionTree:
         best_gain = -1
         split_idx, split_threshold = None, None
 
+        # Check every feature and every threshold
         for feature_idx in feature_idxs:
             X_column = X[:, feature_idx]
             thresholds = np.unique(X_column)
 
             for thr in thresholds:
+                # Find best split with the best information gain
                 gain = self.__information_gain(y, X_column, thr)
 
                 if gain > best_gain:
@@ -108,6 +113,7 @@ class DecisionTree:
 
     # Second callable function
     def predict(self, X):
+        # Traverse down the tree
         predictions = np.array([self.__traverse_tree(x, self.root) for x in X])
 
         return predictions

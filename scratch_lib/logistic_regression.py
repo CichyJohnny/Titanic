@@ -18,16 +18,20 @@ class LogisticRegression:
         X = X.astype(float)
 
         n_samples, n_features = X.shape
+
+        # Init weights and bias
         self.weights = np.zeros(n_features)
         self.bias = 0
 
         for _ in range(self.n_iters):
+            # Compute sigmoid of the linear regression
             linear_pred = np.dot(X, self.weights) + self.bias
             predictions = sigmoid(linear_pred)
 
             dw = (1 / n_samples) * np.dot(X.T, (predictions - y))
             db = (1 / n_samples) * np.sum(predictions - y)
 
+            # Adjust weights and bias
             self.weights -= self.lr * dw
             self.bias -= self.lr * db
 
@@ -36,6 +40,6 @@ class LogisticRegression:
 
         linear_pred = np.dot(X, self.weights) + self.bias
         y_pred = sigmoid(linear_pred)
-        class_pred = np.array(y_pred).round().astype(int)
+        class_pred = np.array(y_pred).round().astype(int)  # Round to 0 or 1 based on 0.5 threshold
 
         return class_pred

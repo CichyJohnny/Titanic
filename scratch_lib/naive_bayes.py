@@ -2,6 +2,12 @@ import numpy as np
 
 
 class NaiveBayes:
+    def __init__(self):
+        self._classes = None
+        self._mean = None
+        self._var = None
+        self._prior = None
+
     def fit(self, X, y):
         X = X.astype(float)
 
@@ -14,6 +20,7 @@ class NaiveBayes:
         self._var = np.zeros((n_classes, n_features), dtype=float)
         self._prior = np.zeros(n_classes, dtype=float)
 
+        # With Bayes' theorem, calculate the posterior probability of a class given the features
         for idx, c in enumerate(self._classes):
             X_c = X[y == c]
             self._mean[idx, :] = X_c.mean(axis=0)
@@ -23,23 +30,23 @@ class NaiveBayes:
     def predict(self, X):
         X = X.astype(float)
 
-        y_pred = np.array([self._predict(x) for x in X])
+        y_pred = np.array([self.__predict(x) for x in X])
 
         return y_pred
 
-    def _predict(self, x):
+    def __predict(self, x):
         posteriors = []
 
         for idx, c in enumerate(self._classes):
             prior = np.log(self._prior[idx])
-            class_conditional = np.sum(np.log(self._pdf(idx, x)))
+            class_conditional = np.sum(np.log(self.__pdf(idx, x)))
             posterior = prior + class_conditional
 
             posteriors.append(posterior)
 
         return self._classes[np.argmax(posteriors)]
 
-    def _pdf(self, class_idx, x):
+    def __pdf(self, class_idx, x):
         mean = self._mean[class_idx]
         var = self._var[class_idx]
 
